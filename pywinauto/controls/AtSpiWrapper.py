@@ -1,5 +1,26 @@
 from ..base_wrapper import BaseWrapper
+from ..base_wrapper import BaseMeta
 from .. import backend
+
+
+class AtSpiMeta(BaseMeta):
+    control_type_to_cls = {}
+
+    def __init__(cls, name, bases, attrs):
+        BaseMeta.__init__(cls, name, bases, attrs)
+
+        for t in cls.control_types:
+            AtSpiMeta.control_type_to_cls[t] = cls
+
+    @staticmethod
+    def find_wrapper(element):
+        wrapper_match = AtSpiWrapper
+
+        # Check for a more specific wrapper in the registry
+        if element.control_type in AtSpiWrapper.control_type_to_cls:
+            wrapper_match = AtSpiWrapper.control_type_to_cls[element.control_type]
+
+        return wrapper_match
 
 
 class AtSpiWrapper(BaseWrapper):
