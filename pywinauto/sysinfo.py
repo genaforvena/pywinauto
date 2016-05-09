@@ -28,6 +28,12 @@ try:
 except ImportError:
     UIA_support = False
 
+try:
+    import pyatspi
+    ATSPI_support = True
+except ImportError:
+    ATSPI_support = False
+
 def os_arch():
     architectureMap = {
         'x86':'x86',

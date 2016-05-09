@@ -26,6 +26,10 @@ if UIA_support:
     from . import UIAWrapper # register "uia" back-end (at the end of UIAWrapper module)
     from . import uia_controls
 
+from ..sysinfo import ATSPI_support
+if ATSPI_support:
+    from . import AtSpiWrapper # register "AtSpi" back-end (at the end of AtSpiWrapper module)
+
 from .HwndWrapper import get_dialog_props_from_handle
 from .HwndWrapper import InvalidWindowHandle
 

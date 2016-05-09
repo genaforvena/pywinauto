@@ -1,5 +1,5 @@
 from ..base_wrapper import BaseWrapper
-
+from .. import backend
 
 class AtSpiWrapper(BaseWrapper):
     def top_level_parent(self):
@@ -126,3 +126,6 @@ class AtSpiWrapper(BaseWrapper):
 
     def parent(self):
         return super().parent()
+
+
+backend.register('atspi', None, AtSpiWrapper)
