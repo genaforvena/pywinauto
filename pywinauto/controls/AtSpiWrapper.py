@@ -1,7 +1,29 @@
 from ..base_wrapper import BaseWrapper
 from .. import backend
 
+
 class AtSpiWrapper(BaseWrapper):
+    #-----------------------------------------------------------
+    # TODO: can't inherit __new__ function from BaseWrapper?
+    def __new__(cls, element):
+        # only use the meta class to find the wrapper for HwndWrapper
+        # so allow users to force the wrapper if they want
+        # thanks to Raghav for finding this.
+        if cls != AtSpiWrapper:
+            obj = object.__new__(cls)
+            obj.__init__(element)
+            return obj
+
+        new_class = cls.find_wrapper(element)
+
+        obj = object.__new__(new_class)
+        obj.__init__(element)
+
+        return obj
+
+    def __init__(self, element_info):
+        BaseWrapper.__init__(self, element_info, backend.registry.backends['atspi'])
+
     def top_level_parent(self):
         return super().top_level_parent()
 
@@ -12,15 +34,9 @@ class AtSpiWrapper(BaseWrapper):
                   turn_off_numlock=True, set_foreground=True):
         return super().type_keys(keys, pause, with_spaces, with_tabs, with_newlines, turn_off_numlock, set_foreground)
 
-    def __eq__(self, other):
-        return super().__eq__(other)
-
     def release_mouse_input(self, button="left", coords=(None, None), pressed="", absolute=False, key_down=True,
                             key_up=True):
         super().release_mouse_input(button, coords, pressed, absolute, key_down, key_up)
-
-    def __ne__(self, other):
-        return super().__ne__(other)
 
     def is_visible(self):
         return super().is_visible()
@@ -88,9 +104,6 @@ class AtSpiWrapper(BaseWrapper):
     def is_dialog(self):
         return super().is_dialog()
 
-    def __init__(self, element_info, active_backend):
-        super().__init__(element_info, active_backend)
-
     def _needs_image_prop(self):
         return super()._needs_image_prop()
 
@@ -126,6 +139,12 @@ class AtSpiWrapper(BaseWrapper):
 
     def parent(self):
         return super().parent()
+
+    def __eq__(self, other):
+        return super().__eq__(other)
+
+    def __ne__(self, other):
+        return super().__ne__(other)
 
 
 backend.register('atspi', None, AtSpiWrapper)
